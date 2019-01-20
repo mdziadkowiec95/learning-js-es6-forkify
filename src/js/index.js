@@ -1,7 +1,9 @@
-import { elements, renderLoader, clearLoader } from './views/base';
-import * as searchView from './views/searchView';
 import Search from './models/Search';
 import Recipe from './models/Recipe';
+import { elements, renderLoader, clearLoader } from './views/base';
+import * as searchView from './views/searchView';
+import * as recipeView from './views/recipeView';
+
 
 
 
@@ -22,9 +24,10 @@ const state = {};
 
 const controlSearch = async () => {
   // 1) Get query from view
-  const query = searchView.getInput(); // TODO
+  const query = searchView.getInput();
 
-  console.log(query);
+
+  // console.log(query);
 
   if (query) {
     // 2) New search object and add to state
@@ -42,8 +45,9 @@ const controlSearch = async () => {
       // 5) Render results on UI
       clearLoader();
       searchView.renderResults(state.search.result);
+
     } catch (error) {
-      alert(`Something went wrong with searching recipes...`)
+      alert(`Something went wrong with searching recipes...`);
       clearLoader();
     }
 
@@ -56,6 +60,7 @@ elements.searchForm.addEventListener('submit', e => {
   // console.log(e);
   controlSearch();
 });
+
 
 elements.searchResPages.addEventListener('click', e => {
   const btn = e.target.closest('.btn-inline');
@@ -77,25 +82,32 @@ elements.searchResPages.addEventListener('click', e => {
 
 const controlRecipe = async () => {
   // Get ID from url
-  const id = window.location.hash.slice(1, -1);
+  const id = window.location.hash.replace('#', '');
   console.log(id);
 
   if (id) {
     // Prepare UI for changes
-
+    recipeView.clearRecipe();
+    renderLoader(elements.recipeList)
     // Create Recipe obj
     state.recipe = new Recipe(id);
+    window.r = state.recipe; // for TESTING
 
     try {
       // Get recipe data
       await state.recipe.getRecipe();
+      console.log(state.recipe);
 
       // Calculate servings and time
+      state.recipe.parseIngredients();
       state.recipe.calcTime();
       state.recipe.calcServings();
 
       // Render recipe
-      console.log(state.recipe);
+      clearLoader();
+      recipeView.renderRecipe(state.recipe);
+      // console.log(state.recipe);
+
     } catch (error) {
       alert(`Something went wrong with processing recipe... => ${error}`);
     }
