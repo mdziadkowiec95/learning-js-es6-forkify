@@ -11,6 +11,10 @@ export const clearResults = () => {
   elements.searchResPages.innerHTML = '';
 };
 
+export const highlightSelected = id => {
+  document.querySelector(`a[href="#${id}"]`).classList.add('.results__link--active');
+}
+
 // function which is for limiting title lenth to max 17
 const limitRecipeTitle = (title, limit = 17) => {
   if (title.length > limit) {
