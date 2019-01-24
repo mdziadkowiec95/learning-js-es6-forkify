@@ -19,7 +19,7 @@ export const highlightSelected = id => {
 }
 
 // function which is for limiting title lenth to max 17
-const limitRecipeTitle = (title, limit = 17) => {
+export const limitRecipeTitle = (title, limit = 17) => {
   if (title.length > limit) {
     const newTitle = [];
 
